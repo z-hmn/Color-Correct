@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container practical-quiz-container">
+    
+    <!-- Images Section -->
+    <div class="images-section">
+        <div class="image-wrapper">
+            <img id="target-image" src="{{ url_for('static', filename='images/target_edited.jpg') }}" alt="Target Image">
+            Target Edit
+        </div>
+        <div class="image-wrapper">
+            <canvas id="edit-canvas"></canvas>
+            Your Edit
+        </div>
+    </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+        <h5 class="mb-2">Adjust Your Image</h5>
+
+        <div class="slider-group">
+            <label for="exposure-slider">Exposure: <span class="slider-value">0</span></label>
+            <input type="range" id="exposure-slider" min="-100" max="100" value="0">
+        </div>
+
+        <div class="slider-group">
+            <label for="highlights-slider">Highlights: <span class="slider-value">0</span></label>
+            <input type="range" id="highlights-slider" min="-100" max="100" value="0">
+        </div>
+
+        <div class="slider-group">
+            <label for="shadows-slider">Shadows: <span class="slider-value">0</span></label>
+            <input type="range" id="shadows-slider" min="-100" max="100" value="0">
+        </div>
+
+        <div class="slider-group">
+            <label for="contrast-slider">Contrast: <span class="slider-value">0</span></label>
+            <input type="range" id="contrast-slider" min="-100" max="100" value="0">
+        </div>
+
+        <div class="slider-group">
+            <label for="saturation-slider">Saturation: <span class="slider-value">0</span></label>
+            <input type="range" id="saturation-slider" min="-100" max="100" value="0">
+        </div>
+
+        <div class="slider-group">
+            <label for="warmth-slider">Warmth: <span class="slider-value">0</span></label>
+            <input type="range" id="warmth-slider" min="-100" max="100" value="0">
+        </div>
+
+        <div class="slider-group">
+            <label for="tint-slider">Tint: <span class="slider-value">0</span></label>
+            <input type="range" id="tint-slider" min="-100" max="100" value="0">
+        </div>
+
+        <div class="feedback-container" id="feedback"></div>
+
+        <div class="d-flex justify-content-between mt-2">
+            <button type="button" class="btn btn-secondary" id="reset-btn">Reset Edits</button>
+            <button type="button" class="btn btn-primary" id="check-btn">Check Your Edit</button>
+        </div>
+    </div>
+
+</div>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/practical_quiz.js') }}"></script>
+{% endblock %}
+{% endblock %}

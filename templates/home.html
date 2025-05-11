@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <!-- Hero Section -->
+        <div class="text-center mb-5 p-4 bg-light rounded">
+            <h1 class="display-4">Welcome to ColorCorrect</h1>
+            <p class="lead">Learn the basics of photo editing with our interactive tutorial</p>
+            <hr class="my-4">
+            <p>Master exposure, contrast, highlights, shadows, temperature, tint, and saturation adjustments to enhance your photos like a pro.</p>
+            <a class="btn btn-primary btn-lg" href="{{ url_for('learn', lesson_id=1) }}" role="button">Start Learning</a>
+        </div>
+        
+        <!-- Image Examples -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <img src="{{ url_for('static', filename='images/original.jpg') }}" class="card-img-top" alt="Original Photo">
+                    <div class="card-body">
+                        <h5 class="card-title">Before Editing</h5>
+                        <p class="card-text">Learn how to transform your photos with simple adjustments.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <img src="{{ url_for('static', filename='images/edited.jpg') }}" class="card-img-top" alt="Edited Photo">
+                    <div class="card-body">
+                        <h5 class="card-title">After Editing</h5>
+                        <p class="card-text">See the dramatic difference proper editing can make.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- About Section -->
+        <div class="text-center mt-3 mb-4">
+            <h2>What You'll Learn</h2>
+            <p>Our interactive tutorial will guide you through each editing tool step-by-step, explaining how they affect your photos and showing you best practices for achieving professional results.</p>
+            <div class="mt-4">
+                <a class="btn btn-outline-primary" href="{{ url_for('learn', lesson_id=1) }}">Get Started Now</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container quiz-container">
+    <h2 class="mb-4">Quiz Question {{ question_id }}</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <p class="question-text">{{ question.question_text }}</p>
+            <form id="quiz-form" method="POST" data-question-id="{{ question_id }}">
+                <div class="options-container">
+                    {% for option in question.options %}
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="answer" value="{{ option.value }}" id="option-{{ option.value }}">
+                            <label class="form-check-label" for="option-{{ option.value }}">
+                                {{ option.text }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="feedback-container mt-3" id="feedback"></div>
+                <button type="submit" class="btn btn-primary mt-3" id="submit-btn"
+                    data-next-id="{{ next_id }}" data-is-last="{{ is_last }}">Check</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+{% endblock %}
+{% endblock %}

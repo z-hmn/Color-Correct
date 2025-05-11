@@ -1,0 +1,142 @@
+{
+    "lessons": [
+      {
+        "id": 1,
+        "title": "Exposure",
+        "description": "Exposure correlates to a picture's overall brightness. Increasing exposure increases brightness, and vice-versa. Too much (over exposure) or too little (under exposure) causes the picture's details to get lost! Overexposure 'whites' out the details, and underexposure 'blacks' out the details. Generally, exposure should be the first thing you adjust",
+        "tool": "exposure",
+        "min": -100,
+        "max": 100,
+        "default": 0
+      },
+      {
+        "id": 2,
+        "title": "Contrast",
+        "description": "Contrast controls the difference between the darkest and lightest parts of a picture. Increasing contrast makes shadows darker and highlights brighter. Decreasing it softens the difference, making the image look more muted or flat. Too much contrast can create harsh, unrealistic lighting. Too little can make your photo look dull or washed out.",
+        "tool": "contrast",
+        "min": -100,
+        "max": 100,
+        "default": 0
+      },
+      {
+        "id": 3,
+        "title": "Highlights",
+        "description": "Highlights affect the brightest parts of the photo—like the sky, reflections, or shiny surfaces. Lowering highlights brings back lost detail in those bright areas. Raising them can make your photo look more vivid or glowy. Too-high highlights can cause areas to look 'blown out' or too white. Use this tool to recover brightness without changing the entire image!",
+        "tool": "highlights",
+        "min": -100,
+        "max": 100,
+        "default": 0
+      },
+      {
+        "id": 4,
+        "title": "Shadows",
+        "description": "Shadows target the darkest areas of the photo—like under a table or inside hair or clothing. Raising shadows brings out hidden details. Lowering them adds depth and drama by making dark areas even darker. This is great for balancing contrast or creating a specific mood. Careful—lifting shadows too much can make a photo look flat!",
+        "tool": "shadows",
+        "min": -100,
+        "max": 100,
+        "default": 0
+      },
+      {
+        "id": 5,
+        "title": "Warmth",
+        "description": "Warmth controls the color temperature of a photo—how cool (blue) or warm (yellow/orange) it feels. Increasing warmth adds golden tones (great for sunsets or cozy vibes). Decreasing it adds cool blues (nice for snow or clean aesthetics). Use warmth to correct strange lighting or to set the emotional tone of your image.",
+        "tool": "warmth",
+        "min": -100,
+        "max": 100,
+        "default": 0
+      },
+      {
+        "id": 6,
+        "title": "Tint",
+        "description": "Tint fine-tunes the color balance between green and magenta. It's especially helpful for fixing color casts caused by weird lighting—like fluorescent bulbs or mixed indoor light. Use tint along with warmth to get accurate or creative colors, especially for skin tones and white surfaces.",
+        "tool": "tint",
+        "min": -100,
+        "max": 100,
+        "default": 0
+      },
+      {
+        "id": 7,
+        "title": "Saturation",
+        "description": "Saturation adjusts the intensity of all the colors in a photo. Increasing it makes colors look more bold and vibrant. Decreasing it mutes them—or turns the image black and white if set to zero. Be careful with saturation—it's easy to go overboard and make things look unnatural. It's best used after exposure and contrast are dialed in.",
+        "tool": "saturation",
+        "min": -100,
+        "max": 200,
+        "default": 0
+      },
+      {
+        "id": 8,
+        "title": "Putting It All Together",
+        "description": "Start with Exposure: Adjust the exposure to get the overall brightness right. Don't worry about details yet—just aim for a balanced light level.\n\nBalance Highlights and Shadows:\n• Bring down highlights if bright areas are blown out (like clouds or bright clothing).\n• Lift shadows if details are lost in darkness (like faces or backgrounds).\n\nFine-tune with Contrast: After adjusting brightness, add contrast to make the image pop. This helps separate elements and improves definition.\n\nAdjust Color:\n• Use warmth and tint to fix color balance and set the emotional tone.\n• Boost saturation only if you need a more dramatic look (use sparingly).\n\nReview and Tweak: Go back and forth—these tools interact! Increasing contrast might affect how shadows look, and changing vibrance might shift your perceived warmth.",
+        "tool": "all",
+        "min": -100,
+        "max": 100,
+        "default": 0,
+        "final_step": true
+      }
+    ],
+    "quiz": {
+      "questions": [
+        {
+          "id": 1,
+          "question": "Which tool should be the first one you adjust when editing?",
+          "options": [
+            {"id": "A", "text": "Contrast"},
+            {"id": "B", "text": "Exposure"},
+            {"id": "C", "text": "Saturation"},
+            {"id": "D", "text": "Vibrance"}
+          ],
+          "correct": "B"
+        },
+        {
+          "id": 2,
+          "question": "What does the contrast slider do?",
+          "options": [
+            {"id": "A", "text": "Changes the sharpness of the image"},
+            {"id": "B", "text": "Adjusts the temperature of the colors"},
+            {"id": "C", "text": "Increases or decreases the difference between light and dark areas"},
+            {"id": "D", "text": "Makes colors more vibrant"}
+          ],
+          "correct": "C"
+        },
+        {
+          "id": 3,
+          "question": "What happens when you decrease the highlights?",
+          "options": [
+            {"id": "A", "text": "The darkest parts of the photo get darker"},
+            {"id": "B", "text": "The lightest parts of the photo lose detail"},
+            {"id": "C", "text": "The lightest areas recover detail and become less bright"},
+            {"id": "D", "text": "Colors become more vivid"}
+          ],
+          "correct": "C"
+        }
+      ],
+      "practical": [
+        {
+          "id": 1,
+          "hint": "Try to match the reference image by adjusting the sliders",
+          "correct_values": {
+            "exposure": 15,
+            "contrast": 20,
+            "highlights": -10,
+            "shadows": 25,
+            "warmth": 30,
+            "tint": -5,
+            "saturation": 10
+          }
+        },
+        {
+          "id": 2,
+          "hint": "The desired result has more orange tones than blue",
+          "correct_values": {
+            "exposure": 5,
+            "contrast": 15,
+            "highlights": 0,
+            "shadows": 10,
+            "warmth": 40,
+            "tint": 0,
+            "saturation": 15
+          }
+        }
+      ]
+    }
+  }

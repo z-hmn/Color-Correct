@@ -1,0 +1,121 @@
+[
+    {
+      "id": 1,
+      "question_text": "Which tool should be the first one you adjust when editing?",
+      "type": "multiple_choice",
+      "options": [
+        {
+          "text": "Contrast",
+          "value": "contrast"
+        },
+        {
+          "text": "Exposure",
+          "value": "exposure"
+        },
+        {
+          "text": "Saturation",
+          "value": "saturation"
+        },
+        {
+          "text": "Vibrance",
+          "value": "vibrance"
+        }
+      ],
+      "correct_answer": "exposure",
+      "explanation": "Exposure should typically be the first adjustment you make. It sets the overall brightness of the image, creating the foundation for all other edits."
+    },
+    {
+      "id": 2,
+      "question_text": "What does the contrast slider do?",
+      "type": "multiple_choice",
+      "options": [
+        {
+          "text": "Changes the sharpness of the image",
+          "value": "sharpness"
+        },
+        {
+          "text": "Adjusts the temperature of the colors",
+          "value": "temperature"
+        },
+        {
+          "text": "Increases or decreases the difference between light and dark areas",
+          "value": "difference"
+        },
+        {
+          "text": "Makes colors more vibrant",
+          "value": "vibrance"
+        }
+      ],
+      "correct_answer": "difference",
+      "explanation": "Contrast controls the difference between the darkest and lightest parts of a picture. Increasing contrast makes shadows darker and highlights brighter."
+    },
+    {
+      "id": 3,
+      "question_text": "What happens when you decrease the highlights?",
+      "type": "multiple_choice",
+      "options": [
+        {
+          "text": "The darkest parts of the photo get darker",
+          "value": "darken_shadows"
+        },
+        {
+          "text": "The lightest parts of the photo lose detail",
+          "value": "lose_detail"
+        },
+        {
+          "text": "The lightest areas recover detail and become less bright",
+          "value": "recover_detail"
+        },
+        {
+          "text": "Colors become more vivid",
+          "value": "vivid_colors"
+        }
+      ],
+      "correct_answer": "recover_detail",
+      "explanation": "Decreasing highlights brings back lost detail in bright areas. This is especially useful for recovering details in overexposed areas like bright skies."
+    },
+    {
+      "id": 4,
+      "question_text": "Try to match the edit shown in the target image. Focus on making the sunset scene warmer.",
+      "type": "image_edit",
+      "base_image": "img/quiz_image.jpg",
+      "target_image": "img/quiz_image_target.jpg",
+      "primary_adjustment": "warmth",
+      "target_values": {
+        "exposure": 50,
+        "contrast": 60,
+        "highlights": 40,
+        "shadows": 50,
+        "warmth": 75,
+        "tint": 50,
+        "saturation": 60
+      },
+      "tolerance": 15,
+      "hint": "The desired result has more orange tones than blue."
+    },
+    {
+      "id": 5,
+      "question_text": "Which tool would you use to correct a photo that looks too green from fluorescent lighting?",
+      "type": "multiple_choice",
+      "options": [
+        {
+          "text": "Exposure",
+          "value": "exposure"
+        },
+        {
+          "text": "Tint (adjust towards magenta)",
+          "value": "tint_magenta"
+        },
+        {
+          "text": "Saturation",
+          "value": "saturation"
+        },
+        {
+          "text": "Highlights",
+          "value": "highlights"
+        }
+      ],
+      "correct_answer": "tint_magenta",
+      "explanation": "Tint controls the balance between green and magenta. To correct a green cast from fluorescent lighting, you would adjust the tint towards magenta."
+    }
+  ]
