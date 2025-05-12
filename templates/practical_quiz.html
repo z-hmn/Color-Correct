@@ -1,70 +1,82 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container practical-quiz-container">
-    
-    <!-- Images Section -->
-    <div class="images-section">
-        <div class="image-wrapper">
-            <img id="target-image" src="{{ url_for('static', filename='images/target_edited.jpg') }}" alt="Target Image">
-            Target Edit
-        </div>
-        <div class="image-wrapper">
-            <canvas id="edit-canvas"></canvas>
-            Your Edit
+<div class="container-fluid">
+    <!-- Progress Bar -->
+    <div class="progress quiz-progress">
+        <div class="progress-bar" role="progressbar" 
+             style="width: 80%;" 
+             aria-valuenow="4" 
+             aria-valuemin="0" 
+             aria-valuemax="5">
         </div>
     </div>
 
-    <!-- Controls Section -->
-    <div class="controls-section">
-        <h5 class="mb-2">Adjust Your Image</h5>
-
-        <div class="control-panel" style="border: 1px solid #ddd; border-radius: 8px; padding: 12px;">
-            <div class="row">
-                <!-- Two-column layout to save space -->
-                <div class="col-md-6">
-                    <div class="slider-group">
-                        <label for="exposure-slider" class="form-label">Exposure: <span class="slider-value">0</span></label>
-                        <input type="range" class="form-range" id="exposure-slider" min="-100" max="100" value="0">
-                    </div>
-                    <div class="slider-group">
-                        <label for="highlights-slider" class="form-label">Highlights: <span class="slider-value">0</span></label>
-                        <input type="range" class="form-range" id="highlights-slider" min="-100" max="100" value="0">
-                    </div>
-                    <div class="slider-group">
-                        <label for="shadows-slider" class="form-label">Shadows: <span class="slider-value">0</span></label>
-                        <input type="range" class="form-range" id="shadows-slider" min="-100" max="100" value="0">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="slider-group">
-                        <label for="contrast-slider" class="form-label">Contrast: <span class="slider-value">0</span></label>
-                        <input type="range" class="form-range" id="contrast-slider" min="-100" max="100" value="0">
-                    </div>
-                    <div class="slider-group">
-                        <label for="saturation-slider" class="form-label">Saturation: <span class="slider-value">0</span></label>
-                        <input type="range" class="form-range" id="saturation-slider" min="-100" max="100" value="0">
-                    </div>
-                    <div class="slider-group">
-                        <label for="warmth-slider" class="form-label">Warmth: <span class="slider-value">0</span></label>
-                        <input type="range" class="form-range" id="warmth-slider" min="-100" max="100" value="0">
-                    </div>
-                    <div class="slider-group">
-                        <label for="tint-slider" class="form-label">Tint: <span class="slider-value">0</span></label>
-                        <input type="range" class="form-range" id="tint-slider" min="-100" max="100" value="0">
-                    </div>
-                </div>
+    <div class="practical-quiz-container">
+        <!-- Images Section -->
+        <div class="images-section">
+            <div class="image-wrapper">
+                <img id="target-image" src="{{ url_for('static', filename='images/target_edited.jpg') }}" alt="Target Image">
+                <div class="image-label">Target Edit</div>
+            </div>
+            <div class="image-wrapper">
+                <canvas id="edit-canvas"></canvas>
+                <div class="image-label">Your Edit</div>
             </div>
         </div>
 
-        <div class="feedback-container" id="feedback"></div>
+        <!-- Controls Section -->
+        <div class="controls-section">
+            <h5 class="mb-2">Adjust Your Image</h5>
 
-        <div class="d-flex justify-content-between mt-2">
-            <button type="button" class="btn btn-secondary" id="reset-btn">Reset Edits</button>
-            <button type="button" class="btn btn-primary" id="check-btn">Check Your Edit</button>
+            <div class="control-panel" style="border: 1px solid #ddd; border-radius: 8px; padding: 12px;">
+                <div class="row">
+                    <!-- Two-column layout to save space -->
+                    <div class="col-md-6">
+                        <div class="slider-group">
+                            <label for="exposure-slider" class="form-label">Exposure: <span class="slider-value">0</span></label>
+                            <input type="range" class="form-range" id="exposure-slider" min="-100" max="100" value="0">
+                        </div>
+                        <div class="slider-group">
+                            <label for="highlights-slider" class="form-label">Highlights: <span class="slider-value">0</span></label>
+                            <input type="range" class="form-range" id="highlights-slider" min="-100" max="100" value="0">
+                        </div>
+                        <div class="slider-group">
+                            <label for="shadows-slider" class="form-label">Shadows: <span class="slider-value">0</span></label>
+                            <input type="range" class="form-range" id="shadows-slider" min="-100" max="100" value="0">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="slider-group">
+                            <label for="contrast-slider" class="form-label">Contrast: <span class="slider-value">0</span></label>
+                            <input type="range" class="form-range" id="contrast-slider" min="-100" max="100" value="0">
+                        </div>
+                        <div class="slider-group">
+                            <label for="saturation-slider" class="form-label">Saturation: <span class="slider-value">0</span></label>
+                            <input type="range" class="form-range" id="saturation-slider" min="-100" max="100" value="0">
+                        </div>
+                        <div class="slider-group">
+                            <label for="warmth-slider" class="form-label">Warmth: <span class="slider-value">0</span></label>
+                            <input type="range" class="form-range" id="warmth-slider" min="-100" max="100" value="0">
+                        </div>
+                        <div class="slider-group">
+                            <label for="tint-slider" class="form-label">Tint: <span class="slider-value">0</span></label>
+                            <input type="range" class="form-range" id="tint-slider" min="-100" max="100" value="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feedback-container" id="feedback"></div>
+
+            <div class="d-flex justify-content-between mt-2">
+                <a href="{{ url_for('quiz', question_id=3) }}" class="btn btn-secondary">Back</a>
+                <button type="button" class="btn btn-secondary" id="reset-btn">Reset</button>
+                <button type="button" class="btn btn-primary" id="check-btn">Check</button>
+            </div>
         </div>
     </div>
-
 </div>
+
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/practical_quiz.js') }}"></script>
 {% endblock %}

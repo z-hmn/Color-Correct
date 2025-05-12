@@ -123,6 +123,52 @@ function applyFilters() {
     ctx.putImageData(imageData, 0, 0);
 }
 
+// Function to submit results to the server
+function submitPracticalResults() {
+    fetch('/quiz/practical/submit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            values: filterValues
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const feedbackContainer = document.getElementById('feedback');
+        
+        if (data.is_correct) {
+            feedbackContainer.innerHTML = `
+                <div class="alert alert-success">
+                    <strong>Great job!</strong> Your edit closely matches the target image.
+                    <div class="mt-2">
+                        <button class="btn btn-success" id="complete-btn">Complete Quiz</button>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listener to the complete button
+            document.getElementById('complete-btn').addEventListener('click', function() {
+                window.location.href = '/quiz/result';
+            });
+        } else {
+            // Not close enough - find worst adjustment and provide hint
+            const worstAdjustment = findWorstAdjustment();
+            const hint = getHint(worstAdjustment);
+            
+            feedbackContainer.innerHTML = `
+                <div class="alert alert-warning">
+                    <strong>Not quite there yet!</strong> ${hint}
+                </div>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 // Initialize sliders and add event listeners when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     const sliders = document.querySelectorAll('input[type="range"]');
@@ -144,35 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Check button handler
-    checkButton.addEventListener('click', function() {
-        const scores = evaluateEdit();
-        const worstAdjustment = findWorstAdjustment(scores);
-        
-        if (isEditClose(scores)) {
-            // Success
-            feedbackContainer.innerHTML = `
-                <div class="alert alert-success">
-                    <strong>Great job!</strong> Your edit closely matches the target image.
-                    <div class="mt-2">
-                        <button class="btn btn-success" id="complete-btn">Complete Quiz</button>
-                    </div>
-                </div>
-            `;
-            
-            // Add event listener to the complete button
-            document.getElementById('complete-btn').addEventListener('click', function() {
-                window.location.href = '/quiz/result';
-            });
-        } else {
-            // Not close enough - provide hint
-            const hint = getHint(worstAdjustment);
-            feedbackContainer.innerHTML = `
-                <div class="alert alert-warning">
-                    <strong>Not quite there yet!</strong> ${hint}
-                </div>
-            `;
-        }
-    });
+    checkButton.addEventListener('click', submitPracticalResults);
     
     // Reset button handler
     resetButton.addEventListener('click', function() {
@@ -212,17 +230,9 @@ function evaluateEdit() {
     return scores;
 }
 
-// Function to determine if the edit is close enough to target
-function isEditClose(scores) {
-    // Calculate average score
-    const avgScore = Object.values(scores).reduce((sum, score) => sum + score, 0) / Object.keys(scores).length;
-    
-    // Consider edit close if average score is above 0.75 (meaning most sliders are quite close)
-    return avgScore > 0.75;
-}
-
 // Function to find the worst adjustment
-function findWorstAdjustment(scores) {
+function findWorstAdjustment() {
+    const scores = evaluateEdit();
     let worstKey = null;
     let worstScore = 1;
     
@@ -261,3 +271,68 @@ function getHint(worstAdjustment) {
     
     return hints[parameter] || `Adjust the ${parameter} value - it's not quite right yet.`;
 }
+
+// Function to properly resize and maintain the canvas aspect ratio
+function resizeCanvas() {
+    const canvas = document.getElementById('edit-canvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const wrapper = canvas.parentElement;
+    
+    // Get wrapper dimensions
+    const wrapperWidth = wrapper.clientWidth;
+    const wrapperHeight = wrapper.clientHeight;
+    
+    // Set canvas dimensions, preserving aspect ratio
+    let canvasWidth, canvasHeight;
+    
+    if (originalImage.width && originalImage.height) {
+        const aspectRatio = originalImage.width / originalImage.height;
+        
+        if (wrapperWidth / wrapperHeight > aspectRatio) {
+            // Container is wider than needed
+            canvasHeight = wrapperHeight;
+            canvasWidth = canvasHeight * aspectRatio;
+        } else {
+            // Container is taller than needed
+            canvasWidth = wrapperWidth;
+            canvasHeight = canvasWidth / aspectRatio;
+        }
+        
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+        
+        // Redraw after resize
+        applyFilters();
+    } else {
+        // If image isn't loaded yet, just match container size
+        canvas.width = wrapperWidth;
+        canvas.height = wrapperHeight;
+    }
+}
+
+// Add window resize event listener to handle responsive canvas
+window.addEventListener('resize', function() {
+    resizeCanvas();
+});
+
+// Override originalImage onload to include resizing
+const originalOnload = originalImage.onload;
+originalImage.onload = function() {
+    // First resize the canvas properly
+    resizeCanvas();
+    
+    // Then call the original onload function if it exists
+    if (typeof originalOnload === 'function') {
+        originalOnload.call(this);
+    } else {
+        // Or just apply filters directly
+        applyFilters();
+    }
+};
+
+// Call resizeCanvas when DOM is loaded (in case image loads before event listeners)
+document.addEventListener('DOMContentLoaded', function() {
+    resizeCanvas();
+});

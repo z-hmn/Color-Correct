@@ -48,6 +48,9 @@ footer {
 .slider-value {
     font-weight: bold;
     color: #0d6efd;
+    display: inline-block;
+    min-width: 30px;
+    text-align: right;
 }
 
 .canvas-wrapper {
@@ -56,9 +59,7 @@ footer {
     margin: 0 auto;
     position: relative;
     height: 700px;
-    
     overflow: hidden;
-    
 }
 
 #edit-canvas {
@@ -67,7 +68,6 @@ footer {
     object-fit: contain;
     display: block;
 }
-
 
 /* Disabled sliders */
 input[type="range"]:disabled {
@@ -152,11 +152,13 @@ input[type="range"]:disabled {
     border: 1px solid #f5c6cb;
 }
 
-
 /***** Practical Quiz Styles *****/
 .practical-quiz-container {
     display: flex;
-    height: 100vh;
+    flex-direction: row;
+    height: auto;
+    min-height: 600px;
+    max-height: 90vh;
     padding: 15px;
     gap: 20px;
     overflow: hidden;
@@ -165,59 +167,69 @@ input[type="range"]:disabled {
 .practical-quiz-container .images-section {
     flex: 1.5;
     display: flex;
-    gap: 10px;
-    align-items: flex-start;  /* Align to top */
+    flex-direction: row;
+    gap: 15px;
+    height: 100%;
 }
 
 .practical-quiz-container .image-wrapper {
+    position: relative;
     flex: 1;
+    aspect-ratio: 3/4;
     background-color: #ffffff;
-    padding: 15px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    overflow: hidden;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: 100%;
+    max-height: calc(100vh - 140px);
 }
 
 .practical-quiz-container .image-wrapper img,
 .practical-quiz-container .image-wrapper canvas {
     width: 100%;
-    height: auto;
-    max-height: 85%;
+    height: 100%;
     object-fit: contain;
-    margin-bottom: 8px; /* Space between image and label */
+    object-position: center;
 }
 
 .practical-quiz-container .image-label {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.8);
     font-weight: bold;
+    padding: 5px;
+    text-align: center;
     font-size: 14px;
     color: #333;
-    text-align: center;
 }
 
 .practical-quiz-container .controls-section {
     flex: 1;
-    max-height: fit-content;
     background-color: #ffffff;
     padding: 15px;
-    padding-bottom: 15px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    gap: 14px;
 }
 
 .practical-quiz-container .slider-group {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 4px;
+    padding: 5px;
 }
 
 .practical-quiz-container .slider-group label {
@@ -229,6 +241,8 @@ input[type="range"]:disabled {
     background-color: #e9ecef;
     border-radius: 5px;
     outline: none;
+    width: 100%;
+    margin: 5px 0;
 }
 
 .practical-quiz-container .slider-group input[type="range"]::-webkit-slider-thumb {
@@ -275,7 +289,13 @@ input[type="range"]:disabled {
     font-size: 14px;
 }
 
-/* Add these styles to your existing CSS file */
+/* Control panel improvements */
+.control-panel {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
+}
 
 /* Review page enhancements */
 .tool-description h5 {
@@ -325,4 +345,51 @@ input[type="range"]:disabled {
     width: 100%;
     height: auto;
     object-fit: contain;
+}
+
+/* Optimize quiz container height */
+.quiz-container {
+    max-height: calc(100vh - 180px); /* Account for navbar and footer */
+    display: flex;
+    flex-direction: column;
+}
+
+.quiz-container .card {
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 250px);
+}
+
+/* Progress bar styling */
+.quiz-progress {
+    height: 8px;
+    margin: 15px 0;
+    background-color: #e9ecef;
+}
+
+.quiz-progress .progress-bar {
+    background-color: #0d6efd;
+    transition: width 0.3s ease;
+}
+
+/* Responsive adjustments for practical quiz */
+@media (max-width: 768px) {
+    .practical-quiz-container {
+        flex-direction: column;
+        height: auto;
+        max-height: none;
+    }
+    
+    .practical-quiz-container .images-section {
+        flex-direction: column;
+    }
+    
+    .practical-quiz-container .image-wrapper {
+        aspect-ratio: 1/1;
+        max-height: 300px;
+    }
+    
+    .practical-quiz-container .controls-section {
+        max-height: none;
+    }
 }

@@ -20,10 +20,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 feedbackContainer.innerHTML = `<div class="${data.feedback_class}">${data.feedback}</div>`;
                 
                 if (data.feedback_class === "feedback correct") {
-                    submitButton.textContent = data.is_last ? "Next" : "Next";  // Changed "Finish" to "Next" for consistency
+                    submitButton.textContent = data.is_last ? "Next" : "Next";
                     submitButton.classList.add("btn-success");
                     submitButton.classList.remove("btn-primary");
                     submitButton.setAttribute("data-next-id", data.next_id);
+                    
+                    // Disable all radio buttons after correct answer
+                    document.querySelectorAll('input[type="radio"]').forEach(input => {
+                        input.disabled = true;
+                    });
                 } else {
                     submitButton.textContent = "Check";
                     submitButton.classList.add("btn-primary");
@@ -34,8 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         submitButton.addEventListener('click', function() {
-            // Only handle navigation when button is "Next" or "Finish"
-            if (submitButton.textContent !== "Check") {
+            // Only handle navigation when button is "Next"
+            if (submitButton.textContent === "Next") {
                 const nextId = submitButton.getAttribute("data-next-id");
                 console.log("Next question ID:", nextId);
                 
@@ -45,5 +50,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
+        
+        // Pre-select if user has previously chosen an answer
+        // This could be implemented if you're storing previous answers in session
+        // and passing them to the template
     }
 });

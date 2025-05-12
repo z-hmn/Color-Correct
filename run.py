@@ -29,6 +29,7 @@ def home():
         session['start_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         session['learning_progress'] = {}
         session['quiz_answers'] = {}
+        session['current_lesson_start_time'] = None
     
     return render_template('home.html')
 
@@ -36,6 +37,30 @@ def home():
 @app.route('/learn/<int:lesson_id>')
 def learn(lesson_id):
     data = load_data()
+    
+    # Track time spent on previous lesson
+    if 'current_lesson_start_time' in session and session['current_lesson_start_time']:
+        previous_lesson_id = session.get('current_lesson_id')
+        if previous_lesson_id:
+            start_time = datetime.strptime(session['current_lesson_start_time'], '%Y-%m-%d %H:%M:%S')
+            end_time = datetime.now()
+            time_spent = (end_time - start_time).total_seconds()
+            
+            # Store time spent in learning_progress
+            if 'learning_progress' in session:
+                if str(previous_lesson_id) in session['learning_progress']:
+                    session['learning_progress'][str(previous_lesson_id)]['time_spent'] = time_spent
+                else:
+                    session['learning_progress'][str(previous_lesson_id)] = {
+                        'visited': True,
+                        'time': session['current_lesson_start_time'],
+                        'time_spent': time_spent
+                    }
+                session.modified = True
+    
+    # Set current lesson start time
+    session['current_lesson_start_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    session['current_lesson_id'] = lesson_id
 
     # Track user's progress
     if 'learning_progress' in session:
@@ -93,18 +118,37 @@ def learn(lesson_id):
 @app.route('/quiz/<int:question_id>', methods=['GET', 'POST'])
 def quiz(question_id):
     quiz_content = load_quiz_content()
+    total_questions = len(quiz_content)
     
-    print(f"Quiz route accessed with question_id: {question_id}")
+    # Track time spent on previous quiz question
+    if 'current_question_start_time' in session and session['current_question_start_time']:
+        previous_question_id = session.get('current_question_id')
+        if previous_question_id:
+            start_time = datetime.strptime(session['current_question_start_time'], '%Y-%m-%d %H:%M:%S')
+            end_time = datetime.now()
+            time_spent = (end_time - start_time).total_seconds()
+            
+            # Store time spent
+            if 'quiz_time_spent' not in session:
+                session['quiz_time_spent'] = {}
+            session['quiz_time_spent'][str(previous_question_id)] = time_spent
+            session.modified = True
+    
+    # Set current question start time
+    session['current_question_start_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    session['current_question_id'] = question_id
+    
+    # Ensure question_id is valid
+    if question_id < 1 or question_id > total_questions:
+        return redirect(url_for('quiz', question_id=1))
     
     # Special case for the practical question (assuming it's question 4)
     if question_id == 4:  # Practical question
-        print("Rendering practical quiz template")
-        return render_template('practical_quiz.html')
+        return render_template('practical_quiz.html', question_id=question_id, total_questions=total_questions)
     
     # Regular quiz questions
     question = next((q for q in quiz_content if q['id'] == question_id), None)
     if not question:
-        print(f"Invalid question ID: {question_id}")
         return redirect(url_for('quiz', question_id=1))
     
     # Determine if it is the last question of the multiple choice section
@@ -114,35 +158,102 @@ def quiz(question_id):
     # Handle POST request
     if request.method == 'POST':
         selected_answer = request.form.get('answer')
-        print(f"Selected Answer: {selected_answer}")
-        print(f"Correct Answer: {question['correct_answer']}")
+        is_correct = selected_answer == question['correct_answer']
         
-        if selected_answer == question['correct_answer']:
-            session['quiz_answers'][str(question_id)] = True
+        # Store the answer
+        if 'quiz_answers' not in session:
+            session['quiz_answers'] = {}
+        session['quiz_answers'][str(question_id)] = is_correct
+        session.modified = True
+        
+        if is_correct:
             feedback_message = "Correct! " + question['explanation']
             feedback_class = "feedback correct"
         else:
             feedback_message = "Incorrect. Try again."
             feedback_class = "feedback incorrect"
         
-        # Log the response data
-        response_data = {
+        # AJAX response
+        return jsonify({
             'feedback': feedback_message,
             'feedback_class': feedback_class,
             'next_id': next_id,
             'is_last': is_last
-        }
-        print(f"Response Data: {response_data}")
-        
-        # AJAX response
-        return jsonify(response_data)
+        })
     
     # Render quiz template
     return render_template('quiz.html',
                         question=question,
                         question_id=question_id,
                         next_id=next_id,
-                        is_last=is_last)
+                        is_last=is_last,
+                        total_questions=total_questions)
+
+# Add route for practical quiz submission
+@app.route('/quiz/practical/submit', methods=['POST'])
+def submit_practical():
+    data = request.json
+    user_values = data.get('values', {})
+    
+    # Get target values from quiz_content
+    quiz_content = load_quiz_content()
+    question = next((q for q in quiz_content if q['id'] == 4), None)
+    
+    if not question:
+        return jsonify({'success': False, 'message': 'Question not found'})
+    
+    target_values = question.get('target_values', {})
+    tolerance = question.get('tolerance', 15)
+    
+    # Evaluate the user's edit
+    score = 0
+    total_params = len(target_values)
+    
+    for param, target in target_values.items():
+        user_value = user_values.get(param, 0)
+        difference = abs(user_value - target)
+        
+        # Mark as correct if within tolerance
+        if difference <= tolerance:
+            score += 1
+            
+    # Store the result in session
+    if 'quiz_answers' not in session:
+        session['quiz_answers'] = {}
+    
+    is_correct = score / total_params >= 0.7  # At least 70% accuracy required
+    session['quiz_answers']['4'] = is_correct
+    session.modified = True
+    
+    return jsonify({
+        'success': True,
+        'is_correct': is_correct,
+        'score': score,
+        'total': total_params
+    })
+
+# Add route for quiz results
+@app.route('/quiz/result')
+def quiz_result():
+    # Calculate score
+    quiz_answers = session.get('quiz_answers', {})
+    correct = sum(1 for answer in quiz_answers.values() if answer)
+    total = len(load_quiz_content())
+    score = int((correct / total) * 100) if total > 0 else 0
+    
+    # Calculate time spent
+    quiz_time_spent = session.get('quiz_time_spent', {})
+    total_time = sum(quiz_time_spent.values())
+    
+    # Reset quiz progress
+    session['current_question_start_time'] = None
+    session['current_question_id'] = None
+    
+    return render_template('quiz_result.html',
+                          score=score,
+                          correct=correct,
+                          total=total,
+                          time_spent=total_time)
 
 if __name__ == '__main__':
     app.run(debug=True)
