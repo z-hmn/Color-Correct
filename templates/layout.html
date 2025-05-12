@@ -28,7 +28,7 @@
                         <a class="nav-link {% if request.endpoint == 'learn' %}active{% endif %}" href="{{ url_for('learn', lesson_id=1) }}">Learn</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Quiz</a>
+                        <a class="nav-link {% if request.endpoint == 'quiz' %}active{% endif %}" href="{{ url_for('quiz', question_id=1) }}">Quiz</a>
                     </li>
                 </ul>
             </div>

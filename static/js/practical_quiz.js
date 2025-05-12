@@ -1,12 +1,12 @@
 // Target values that represent the correct edit
 const targetValues = {
-    exposure: -20,
-    highlights: -60,
-    shadows: -30,
-    contrast: 10,
+    exposure: -30,
+    highlights: 20,
+    shadows: -15,
+    contrast: 5,
     saturation: 10,
-    warmth: 60,
-    tint: -60
+    warmth: 30,
+    tint: 15
 };
 
 // Current user filter values
