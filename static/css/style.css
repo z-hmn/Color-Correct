@@ -200,8 +200,10 @@ input[type="range"]:disabled {
 
 .practical-quiz-container .controls-section {
     flex: 1;
+    max-height: fit-content;
     background-color: #ffffff;
     padding: 15px;
+    padding-bottom: 15px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -273,3 +275,54 @@ input[type="range"]:disabled {
     font-size: 14px;
 }
 
+/* Add these styles to your existing CSS file */
+
+/* Review page enhancements */
+.tool-description h5 {
+    color: #333;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.tool-description ul {
+    padding-left: 1.5rem;
+}
+
+.tool-description li {
+    margin-bottom: 0.5rem;
+}
+
+/* Practice page optimizations */
+.practice-page .canvas-wrapper {
+    height: 500px;
+    max-height: 500px;
+    margin-bottom: 0;
+}
+
+.practice-page .card {
+    margin-bottom: 0.75rem;
+}
+
+.practice-page .slider-group {
+    margin-bottom: 10px;
+}
+
+.practice-page .card-body {
+    padding: 12px;
+}
+
+.practice-page .form-label {
+    margin-bottom: 3px;
+    font-size: 0.95rem;
+}
+
+.practice-page .form-range {
+    height: 8px;
+}
+
+/* Make images display better */
+.card img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}

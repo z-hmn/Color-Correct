@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="row">
+    <!-- Media Section (Left side) -->
+    <div class="col-md-7">
+        <div class="row">
+            <!-- Original Image -->
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header text-center">
+                        <h6 class="mb-0">Original</h6>
+                    </div>
+                    <div class="card-body p-2">
+                        <img src="/static/images/original.jpg" class="img-fluid" alt="Original Image">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Edited Image -->
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header text-center">
+                        <h6 class="mb-0">Edited</h6>
+                    </div>
+                    <div class="card-body p-2">
+                        <img src="/static/images/edited.jpg" class="img-fluid" alt="Edited Image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Description Section (Right side) -->
+    <div class="col-md-5">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">{{ lesson.title }}</h5>
+                <span class="badge bg-primary">Step {{ lesson_id }} of {{ total_lessons }}</span>
+            </div>
+            <div class="card-body">
+                <!-- Tool Description - Formatted with styling -->
+                <div class="tool-description mb-4 p-2 bg-light rounded" style="font-size: 0.9rem; line-height: 1.4;">
+                    <h6 class="mb-2"><strong>Start with Exposure</strong></h6>
+                    <p>Adjust the exposure to get the overall brightness right. Don't worry about details yet—just aim for a balanced light level.</p>
+                    
+                    <h6 class="mt-3 mb-2"><strong>Balance Highlights and Shadows</strong></h6>
+                    <ul style="padding-left: 1.2rem;">
+                        <li>Bring down highlights if bright areas are blown out (like clouds or bright clothing).</li>
+                        <li>Lift shadows if details are lost in darkness (like faces or backgrounds).</li>
+                    </ul>
+                    
+                    <h6 class="mt-3 mb-2"><strong>Fine-tune with Contrast</strong></h6>
+                    <p>After adjusting brightness, add contrast to make the image pop. This helps separate elements and improves definition.</p>
+                    
+                    <h6 class="mt-3 mb-2"><strong>Adjust Color</strong></h6>
+                    <ul style="padding-left: 1.2rem;">
+                        <li>Use warmth and tint to fix color balance and set the emotional tone.</li>
+                        <li>Boost saturation only if you need a more dramatic look (use sparingly).</li>
+                    </ul>
+                    
+                    <h6 class="mt-3 mb-2"><strong>Review and Tweak</strong></h6>
+                    <p>Go back and forth—these tools interact! Increasing contrast might affect how shadows look, and changing vibrance might shift your perceived warmth.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Buttons -->
+        <div class="d-flex justify-content-between">
+            <a href="{{ url_for('learn', lesson_id=lesson_id-1) }}" class="btn btn-secondary">Back</a>
+            <a href="{{ url_for('learn', lesson_id=next_lesson) }}" class="btn btn-primary">Next</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<style>
+.tool-description h6 {
+    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
+}
+.tool-description p, .tool-description ul {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+}
+</style>

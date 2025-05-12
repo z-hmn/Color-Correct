@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+    /* Custom styles to make the practice page more compact */
+    .practice-page .canvas-wrapper {
+        height: 500px;
+        max-height: 500px;
+    }
+    
+    .practice-page .slider-group {
+        margin-bottom: 10px;
+    }
+    
+    .practice-page .card-body {
+        padding: 12px;
+    }
+    
+    .practice-page .form-label {
+        margin-bottom: 3px;
+        font-size: 0.95rem;
+    }
+    
+    .practice-page .form-range {
+        height: 8px;
+    }
+</style>
+
+<div class="row practice-page">
+    <!-- Image Preview Section -->
+    <div class="col-md-7">
+        <div class="card mb-2">
+            <div class="card-header text-center py-2">
+                <h5 class="mb-0">Practice Using All The Tools Together</h5>
+            </div>
+            <div class="card-body p-2">
+                <div class="canvas-wrapper">
+                    <canvas id="edit-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Controls Section -->
+    <div class="col-md-5">
+        <div class="card mb-2">
+            <div class="card-header d-flex justify-content-between align-items-center py-2">
+                <h5 class="mb-0">Controls</h5>
+                <span class="badge bg-primary">Step {{ lesson_id }} of {{ total_lessons }}</span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Creating a two-column layout for sliders to save vertical space -->
+                    {% for l in lessons if not l.final_step %}
+                    <div class="col-md-6">
+                        <div class="slider-group">
+                            <label for="{{ l.tool }}-slider" class="form-label">{{ l.title }}: <span class="slider-value">{{ l.default }}</span></label>
+                            <input type="range" class="form-range" id="{{ l.tool }}-slider"
+                            min="{{ l.min }}" max="{{ l.max }}" value="{{ l.default }}">
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Buttons -->
+        <div class="d-flex justify-content-between mt-2">
+            <a href="{{ url_for('learn', lesson_id=lesson_id-1) }}" class="btn btn-secondary">Back</a>
+            <a href="{{ url_for('quiz', question_id=1) }}" class="btn btn-success">Start Quiz</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

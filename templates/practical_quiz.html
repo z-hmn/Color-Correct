@@ -18,39 +18,42 @@
     <div class="controls-section">
         <h5 class="mb-2">Adjust Your Image</h5>
 
-        <div class="slider-group">
-            <label for="exposure-slider">Exposure: <span class="slider-value">0</span></label>
-            <input type="range" id="exposure-slider" min="-100" max="100" value="0">
-        </div>
-
-        <div class="slider-group">
-            <label for="highlights-slider">Highlights: <span class="slider-value">0</span></label>
-            <input type="range" id="highlights-slider" min="-100" max="100" value="0">
-        </div>
-
-        <div class="slider-group">
-            <label for="shadows-slider">Shadows: <span class="slider-value">0</span></label>
-            <input type="range" id="shadows-slider" min="-100" max="100" value="0">
-        </div>
-
-        <div class="slider-group">
-            <label for="contrast-slider">Contrast: <span class="slider-value">0</span></label>
-            <input type="range" id="contrast-slider" min="-100" max="100" value="0">
-        </div>
-
-        <div class="slider-group">
-            <label for="saturation-slider">Saturation: <span class="slider-value">0</span></label>
-            <input type="range" id="saturation-slider" min="-100" max="100" value="0">
-        </div>
-
-        <div class="slider-group">
-            <label for="warmth-slider">Warmth: <span class="slider-value">0</span></label>
-            <input type="range" id="warmth-slider" min="-100" max="100" value="0">
-        </div>
-
-        <div class="slider-group">
-            <label for="tint-slider">Tint: <span class="slider-value">0</span></label>
-            <input type="range" id="tint-slider" min="-100" max="100" value="0">
+        <div class="control-panel" style="border: 1px solid #ddd; border-radius: 8px; padding: 12px;">
+            <div class="row">
+                <!-- Two-column layout to save space -->
+                <div class="col-md-6">
+                    <div class="slider-group">
+                        <label for="exposure-slider" class="form-label">Exposure: <span class="slider-value">0</span></label>
+                        <input type="range" class="form-range" id="exposure-slider" min="-100" max="100" value="0">
+                    </div>
+                    <div class="slider-group">
+                        <label for="highlights-slider" class="form-label">Highlights: <span class="slider-value">0</span></label>
+                        <input type="range" class="form-range" id="highlights-slider" min="-100" max="100" value="0">
+                    </div>
+                    <div class="slider-group">
+                        <label for="shadows-slider" class="form-label">Shadows: <span class="slider-value">0</span></label>
+                        <input type="range" class="form-range" id="shadows-slider" min="-100" max="100" value="0">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="slider-group">
+                        <label for="contrast-slider" class="form-label">Contrast: <span class="slider-value">0</span></label>
+                        <input type="range" class="form-range" id="contrast-slider" min="-100" max="100" value="0">
+                    </div>
+                    <div class="slider-group">
+                        <label for="saturation-slider" class="form-label">Saturation: <span class="slider-value">0</span></label>
+                        <input type="range" class="form-range" id="saturation-slider" min="-100" max="100" value="0">
+                    </div>
+                    <div class="slider-group">
+                        <label for="warmth-slider" class="form-label">Warmth: <span class="slider-value">0</span></label>
+                        <input type="range" class="form-range" id="warmth-slider" min="-100" max="100" value="0">
+                    </div>
+                    <div class="slider-group">
+                        <label for="tint-slider" class="form-label">Tint: <span class="slider-value">0</span></label>
+                        <input type="range" class="form-range" id="tint-slider" min="-100" max="100" value="0">
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="feedback-container" id="feedback"></div>

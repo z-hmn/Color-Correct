@@ -46,14 +46,43 @@ def learn(lesson_id):
         session.modified = True
 
     # Validate lesson_id
-    if lesson_id < 1 or lesson_id > len(data['lessons']):
+    if lesson_id < 1 or lesson_id > len(data['lessons']) + 1:  # +1 for practice page
         return redirect(url_for('learn', lesson_id=1))
+    
+    # Special case for the review page
+    if lesson_id == 8:  # Assuming the review page is after the 7 tools (at position 8)
+        lesson = data['lessons'][7]  # Use the "Putting It All Together" lesson data
+        total_lessons = len(data['lessons']) + 1  # +1 for the practice page
+        next_lesson = 9  # The practice page
+        
+        return render_template('learn_review.html',
+                           lesson=lesson,
+                           lesson_id=lesson_id,
+                           next_lesson=next_lesson,
+                           total_lessons=total_lessons,
+                           lessons=data['lessons'])
+    
+    # Special case for the practice page
+    elif lesson_id == 9:  # Practice page
+        lesson = data['lessons'][7]  # Use the "Putting It All Together" lesson data
+        total_lessons = len(data['lessons']) + 1  # +1 for the practice page
+        
+        return render_template('learn_practice.html',
+                           lesson=lesson,
+                           lesson_id=lesson_id,
+                           total_lessons=total_lessons,
+                           lessons=data['lessons'])
+    
+    # Regular lesson pages
+    else:
+        if lesson_id == 8:  # Original "Putting It All Together" - redirect to new review page
+            return redirect(url_for('learn', lesson_id=8))
+            
+        lesson = data['lessons'][lesson_id - 1]
+        total_lessons = len(data['lessons']) + 1  # +1 for practice page
+        next_lesson = lesson_id + 1 if lesson_id < total_lessons else None
 
-    lesson = data['lessons'][lesson_id - 1]
-    total_lessons = len(data['lessons'])
-    next_lesson = lesson_id + 1 if lesson_id < total_lessons else None
-
-    return render_template('learn.html',
+        return render_template('learn.html',
                            lesson=lesson,
                            lesson_id=lesson_id,
                            next_lesson=next_lesson,
@@ -61,7 +90,6 @@ def learn(lesson_id):
                            lessons=data['lessons'])
 
 # Integrated approach - Modify your existing quiz route to handle both regular and practical questions
-
 @app.route('/quiz/<int:question_id>', methods=['GET', 'POST'])
 def quiz(question_id):
     quiz_content = load_quiz_content()
