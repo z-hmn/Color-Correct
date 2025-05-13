@@ -125,20 +125,40 @@ function applyFilters() {
 
 // Function to submit results to the server
 function submitPracticalResults() {
+    // First use the local evaluation to see if the edit is close enough
+    const scores = evaluateEdit();
+    const isClose = isEditClose(scores);
+    
+    // If not close, provide a hint without sending to server
+    if (!isClose) {
+        const worstAdjustment = findWorstAdjustment(scores);
+        const hint = getHint(worstAdjustment);
+        const feedbackContainer = document.getElementById('feedback');
+        
+        feedbackContainer.innerHTML = `
+            <div class="alert alert-warning">
+                <strong>Not quite there yet!</strong> ${hint}
+            </div>
+        `;
+        return;
+    }
+    
+    // If close enough, submit to server
     fetch('/quiz/practical/submit', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            values: filterValues
+            values: filterValues,
+            is_close_enough: true // Add this flag for the server to know we've validated it
         })
     })
     .then(response => response.json())
     .then(data => {
         const feedbackContainer = document.getElementById('feedback');
         
-        if (data.is_correct) {
+        if (data.is_correct || isClose) { // Accept either server validation or our close-enough check
             feedbackContainer.innerHTML = `
                 <div class="alert alert-success">
                     <strong>Great job!</strong> Your edit closely matches the target image.
@@ -153,19 +173,34 @@ function submitPracticalResults() {
                 window.location.href = '/quiz/result';
             });
         } else {
-            // Not close enough - find worst adjustment and provide hint
-            const worstAdjustment = findWorstAdjustment();
-            const hint = getHint(worstAdjustment);
-            
+            // Server rejected it for some reason
             feedbackContainer.innerHTML = `
                 <div class="alert alert-warning">
-                    <strong>Not quite there yet!</strong> ${hint}
+                    <strong>Not quite there yet!</strong> Keep adjusting your values.
                 </div>
             `;
         }
     })
     .catch(error => {
         console.error('Error:', error);
+        // Show error message but don't stop the user if there's a server issue
+        const feedbackContainer = document.getElementById('feedback');
+        
+        if (isClose) {
+            feedbackContainer.innerHTML = `
+                <div class="alert alert-success">
+                    <strong>Great job!</strong> Your edit closely matches the target image.
+                    <div class="mt-2">
+                        <button class="btn btn-success" id="complete-btn">Complete Quiz</button>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listener to the complete button
+            document.getElementById('complete-btn').addEventListener('click', function() {
+                window.location.href = '/quiz/result';
+            });
+        }
     });
 }
 
@@ -230,9 +265,17 @@ function evaluateEdit() {
     return scores;
 }
 
+// Function to determine if the edit is close enough to target
+function isEditClose(scores) {
+    // Calculate average score
+    const avgScore = Object.values(scores).reduce((sum, score) => sum + score, 0) / Object.keys(scores).length;
+    
+    // Consider edit close if average score is above 0.75 (meaning most sliders are quite close)
+    return avgScore > 0.75;
+}
+
 // Function to find the worst adjustment
-function findWorstAdjustment() {
-    const scores = evaluateEdit();
+function findWorstAdjustment(scores) {
     let worstKey = null;
     let worstScore = 1;
     
