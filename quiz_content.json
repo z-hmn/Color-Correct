@@ -82,13 +82,13 @@
       "target_image": "img/quiz_image_target.jpg",
       "primary_adjustment": "warmth",
       "target_values": {
-        "exposure": 50,
-        "contrast": 60,
-        "highlights": 40,
-        "shadows": 50,
-        "warmth": 75,
-        "tint": 50,
-        "saturation": 60
+        "exposure": -30,
+        "contrast": 5,
+        "highlights": 20,
+        "shadows": -15,
+        "warmth": 30,
+        "tint": 15,
+        "saturation": 10
       },
       "tolerance": 30, 
       "hint": "The desired result has more orange tones than blue."
