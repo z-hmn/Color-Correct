@@ -21,7 +21,7 @@
       {
         "id": 3,
         "title": "Highlights",
-        "description": "Highlights affect the brightest parts of the photo—like the sky, reflections, or shiny surfaces. Lowering highlights brings back lost detail in those bright areas. Raising them can make your photo look more vivid or glowy. Too-high highlights can cause areas to look 'blown out' or too white. Use this tool to recover brightness without changing the entire image!",
+        "description": "Highlights affect the brightest parts of the photo—like the sky, reflections, or shiny surfaces. Increasing highlights brings back lost detail in those bright areas. Lowering them can make your photo look more vivid or glowy. Too-high highlights can cause areas to look 'blown out' or too white. Use this tool to recover brightness without changing the entire image!",
         "tool": "highlights",
         "min": -100,
         "max": 100,

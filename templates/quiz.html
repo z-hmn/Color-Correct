@@ -1,18 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container quiz-container">
-    <h2 class="mb-3">Quiz Question {{ question_id }}</h2>
-    
-    <!-- Progress Bar -->
-    <div class="progress quiz-progress">
-        <div class="progress-bar" role="progressbar" 
-             style="width: {{ (question_id / 5) * 100 }}%;" 
-             aria-valuenow="{{ question_id }}" 
-             aria-valuemin="0" 
-             aria-valuemax="5">
-        </div>
-    </div>
-    
+    <h2 class="mb-4">Quiz Question {{ question_id }}</h2>
     <div class="card mb-4">
         <div class="card-body">
             <p class="question-text">{{ question.question_text }}</p>
@@ -28,15 +17,8 @@
                     {% endfor %}
                 </div>
                 <div class="feedback-container mt-3" id="feedback"></div>
-                <div class="d-flex justify-content-between mt-3">
-                    {% if question_id > 1 %}
-                        <a href="{{ url_for('quiz', question_id=question_id-1) }}" class="btn btn-secondary">Back</a>
-                    {% else %}
-                        <div></div>
-                    {% endif %}
-                    <button type="submit" class="btn btn-primary" id="submit-btn"
-                        data-next-id="{{ next_id }}" data-is-last="{{ is_last }}">Check</button>
-                </div>
+                <button type="submit" class="btn btn-primary mt-3" id="submit-btn"
+                    data-next-id="{{ next_id }}" data-is-last="{{ is_last }}">Check</button>
             </form>
         </div>
     </div>

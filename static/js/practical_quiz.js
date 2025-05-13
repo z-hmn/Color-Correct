@@ -325,3 +325,37 @@ function getHint(worstAdjustment) {
     
     return hints[parameter] || `Adjust the ${parameter} value - it's not quite right yet.`;
 }
+
+// Practical quiz JavaScript
+document.addEventListener('DOMContentLoaded', () => {
+    const checkButton = document.getElementById('check-btn');
+    const feedbackContainer = document.getElementById('feedback');
+    const questionId = 4; // Practical question ID
+    
+    // Keep track of attempts locally as well (defense in depth)
+    let attempts = 0;
+    
+    if (checkButton) {
+        checkButton.addEventListener('click', function() {
+            // Increment attempts count
+            attempts++;
+            
+            // Track this attempt in localStorage as a backup
+            const localAttempts = JSON.parse(localStorage.getItem('quizAttempts') || '{}');
+            localAttempts[questionId] = attempts;
+            localStorage.setItem('quizAttempts', JSON.stringify(localAttempts));
+            
+            // This is calling the existing submitPracticalResults() function from your code
+            submitPracticalResults();
+        });
+    }
+    
+    // Modified function to update global tracking
+    const originalSubmitPracticalResults = window.submitPracticalResults;
+    window.submitPracticalResults = function() {
+        // Call the original function if it exists
+        if (typeof originalSubmitPracticalResults === 'function') {
+            originalSubmitPracticalResults();
+        }
+    };
+});

@@ -30,6 +30,13 @@ def home():
         session['learning_progress'] = {}
         session['quiz_answers'] = {}
         session['current_lesson_start_time'] = None
+        
+        # Initialize quiz time tracking
+        session['quiz_start_time'] = None
+        session['quiz_total_time'] = 0
+        
+        # Initialize attempt counter
+        session['question_attempts'] = {}
     
     return render_template('home.html')
 
@@ -120,23 +127,20 @@ def quiz(question_id):
     quiz_content = load_quiz_content()
     total_questions = len(quiz_content)
     
-    # Track time spent on previous quiz question
-    if 'current_question_start_time' in session and session['current_question_start_time']:
-        previous_question_id = session.get('current_question_id')
-        if previous_question_id:
-            start_time = datetime.strptime(session['current_question_start_time'], '%Y-%m-%d %H:%M:%S')
-            end_time = datetime.now()
-            time_spent = (end_time - start_time).total_seconds()
-            
-            # Store time spent
-            if 'quiz_time_spent' not in session:
-                session['quiz_time_spent'] = {}
-            session['quiz_time_spent'][str(previous_question_id)] = time_spent
-            session.modified = True
+    # Initialize quiz start time when first entering the quiz
+    if 'quiz_start_time' not in session or session['quiz_start_time'] is None:
+        session['quiz_start_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        session['quiz_total_time'] = 0
+        session['question_attempts'] = {}
+        session.modified = True
     
-    # Set current question start time
-    session['current_question_start_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    session['current_question_id'] = question_id
+    # Initialize attempts counter for this question if needed
+    if 'question_attempts' not in session:
+        session['question_attempts'] = {}
+    
+    if str(question_id) not in session['question_attempts']:
+        session['question_attempts'][str(question_id)] = 0
+        session.modified = True
     
     # Ensure question_id is valid
     if question_id < 1 or question_id > total_questions:
@@ -160,6 +164,10 @@ def quiz(question_id):
         selected_answer = request.form.get('answer')
         is_correct = selected_answer == question['correct_answer']
         
+        # Increment attempts counter
+        session['question_attempts'][str(question_id)] += 1
+        attempts = session['question_attempts'][str(question_id)]
+        
         # Store the answer
         if 'quiz_answers' not in session:
             session['quiz_answers'] = {}
@@ -178,7 +186,8 @@ def quiz(question_id):
             'feedback': feedback_message,
             'feedback_class': feedback_class,
             'next_id': next_id,
-            'is_last': is_last
+            'is_last': is_last,
+            'attempts': attempts
         })
     
     # Render quiz template
@@ -194,6 +203,16 @@ def quiz(question_id):
 def submit_practical():
     data = request.json
     user_values = data.get('values', {})
+    
+    # Increment attempts counter for practical question
+    if 'question_attempts' not in session:
+        session['question_attempts'] = {}
+    
+    if '4' not in session['question_attempts']:
+        session['question_attempts']['4'] = 0
+    
+    session['question_attempts']['4'] += 1
+    attempts = session['question_attempts']['4']
     
     # Get target values from quiz_content
     quiz_content = load_quiz_content()
@@ -229,7 +248,8 @@ def submit_practical():
         'success': True,
         'is_correct': is_correct,
         'score': score,
-        'total': total_params
+        'total': total_params,
+        'attempts': attempts
     })
 
 # Add route for quiz results
@@ -241,19 +261,27 @@ def quiz_result():
     total = len(load_quiz_content())
     score = int((correct / total) * 100) if total > 0 else 0
     
-    # Calculate time spent
-    quiz_time_spent = session.get('quiz_time_spent', {})
-    total_time = sum(quiz_time_spent.values())
+    # Calculate time spent on quiz
+    total_time = 0
+    if session.get('quiz_start_time'):
+        start_time = datetime.strptime(session['quiz_start_time'], '%Y-%m-%d %H:%M:%S')
+        end_time = datetime.now()
+        total_time = (end_time - start_time).total_seconds()
     
-    # Reset quiz progress
-    session['current_question_start_time'] = None
-    session['current_question_id'] = None
+    # Get attempts data
+    attempts_data = session.get('question_attempts', {})
+    
+    # Reset quiz tracking
+    session['quiz_start_time'] = None
+    session['question_attempts'] = {}
+    session.modified = True
     
     return render_template('quiz_result.html',
                           score=score,
                           correct=correct,
                           total=total,
-                          time_spent=total_time)
+                          time_spent=total_time,
+                          attempts_data=attempts_data)
 
 if __name__ == '__main__':
     app.run(debug=True)

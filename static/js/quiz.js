@@ -1,14 +1,29 @@
+// Updated quiz.js with attempt tracking
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('quiz-form');
     const feedbackContainer = document.getElementById('feedback');
     const submitButton = document.getElementById('submit-btn');
     
+    // Keep track of attempts for this question
+    let attempts = 0;
+    
     if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            const formData = new FormData(form);
+            
+            // Increment attempts count
+            attempts++;
+            
+            // Get the question ID
             const questionId = form.getAttribute('data-question-id');
             
+            // Track this attempt in localStorage as a backup
+            const localAttempts = JSON.parse(localStorage.getItem('quizAttempts') || '{}');
+            localAttempts[questionId] = attempts;
+            localStorage.setItem('quizAttempts', JSON.stringify(localAttempts));
+            
+            // Submit the form
+            const formData = new FormData(form);
             fetch(`/quiz/${questionId}`, {
                 method: 'POST',
                 body: formData
@@ -16,14 +31,19 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 console.log("Received response:", data); // Debugging output
-                
                 feedbackContainer.innerHTML = `<div class="${data.feedback_class}">${data.feedback}</div>`;
                 
                 if (data.feedback_class === "feedback correct") {
+                    // Update the button when the answer is correct
                     submitButton.textContent = data.is_last ? "Next" : "Next";
                     submitButton.classList.add("btn-success");
                     submitButton.classList.remove("btn-primary");
                     submitButton.setAttribute("data-next-id", data.next_id);
+                    
+                    // Update attempts count from server
+                    if (data.attempts) {
+                        attempts = data.attempts;
+                    }
                     
                     // Disable all radio buttons after correct answer
                     document.querySelectorAll('input[type="radio"]').forEach(input => {
@@ -43,16 +63,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (submitButton.textContent === "Next") {
                 const nextId = submitButton.getAttribute("data-next-id");
                 console.log("Next question ID:", nextId);
-                
                 if (nextId) {
                     // Always use the standard path - our backend will handle special cases
                     window.location.href = `/quiz/${nextId}`;
                 }
             }
         });
-        
-        // Pre-select if user has previously chosen an answer
-        // This could be implemented if you're storing previous answers in session
-        // and passing them to the template
     }
 });
