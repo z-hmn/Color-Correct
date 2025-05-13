@@ -203,7 +203,7 @@ def submit_practical():
         return jsonify({'success': False, 'message': 'Question not found'})
     
     target_values = question.get('target_values', {})
-    tolerance = question.get('tolerance', 15)
+    tolerance = question.get('tolerance', 30)  # Increased from 15 to 30
     
     # Evaluate the user's edit
     score = 0
@@ -221,7 +221,7 @@ def submit_practical():
     if 'quiz_answers' not in session:
         session['quiz_answers'] = {}
     
-    is_correct = score / total_params >= 0.7  # At least 70% accuracy required
+    is_correct = score / total_params >= 0.6  # Reduced from 0.7 to 0.6 (60% accuracy required)
     session['quiz_answers']['4'] = is_correct
     session.modified = True
     

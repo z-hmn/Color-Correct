@@ -90,7 +90,7 @@
         "tint": 50,
         "saturation": 60
       },
-      "tolerance": 15,
+      "tolerance": 30, 
       "hint": "The desired result has more orange tones than blue."
     },
     {

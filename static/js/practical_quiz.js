@@ -217,13 +217,24 @@ document.addEventListener('DOMContentLoaded', () => {
 function evaluateEdit() {
     const scores = {};
     
+    // Increased tolerance for different adjustments - more room for error
+    const tolerances = {
+        exposure: 35,    // Was 20, now 35
+        highlights: 30,  // Was 20, now 30
+        shadows: 30,     // Was 20, now 30
+        contrast: 25,    // Was 20, now 25
+        saturation: 25,  // Was 20, now 25
+        warmth: 35,      // Was 20, now 35
+        tint: 30         // Was 20, now 30
+    };
+    
     for (const [key, value] of Object.entries(targetValues)) {
         const userValue = filterValues[key];
         const difference = Math.abs(userValue - value);
         
         // Calculate a score between 0 and 1 (1 is perfect)
-        // For most sliders with range -100 to 100, a difference of 20 or less is considered close
-        const tolerance = 20;
+        // Using tool-specific tolerances now
+        const tolerance = tolerances[key] || 25; // Default to 25 if not specified
         scores[key] = Math.max(0, 1 - (difference / tolerance));
     }
     
@@ -271,68 +282,3 @@ function getHint(worstAdjustment) {
     
     return hints[parameter] || `Adjust the ${parameter} value - it's not quite right yet.`;
 }
-
-// Function to properly resize and maintain the canvas aspect ratio
-function resizeCanvas() {
-    const canvas = document.getElementById('edit-canvas');
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    const wrapper = canvas.parentElement;
-    
-    // Get wrapper dimensions
-    const wrapperWidth = wrapper.clientWidth;
-    const wrapperHeight = wrapper.clientHeight;
-    
-    // Set canvas dimensions, preserving aspect ratio
-    let canvasWidth, canvasHeight;
-    
-    if (originalImage.width && originalImage.height) {
-        const aspectRatio = originalImage.width / originalImage.height;
-        
-        if (wrapperWidth / wrapperHeight > aspectRatio) {
-            // Container is wider than needed
-            canvasHeight = wrapperHeight;
-            canvasWidth = canvasHeight * aspectRatio;
-        } else {
-            // Container is taller than needed
-            canvasWidth = wrapperWidth;
-            canvasHeight = canvasWidth / aspectRatio;
-        }
-        
-        canvas.width = canvasWidth;
-        canvas.height = canvasHeight;
-        
-        // Redraw after resize
-        applyFilters();
-    } else {
-        // If image isn't loaded yet, just match container size
-        canvas.width = wrapperWidth;
-        canvas.height = wrapperHeight;
-    }
-}
-
-// Add window resize event listener to handle responsive canvas
-window.addEventListener('resize', function() {
-    resizeCanvas();
-});
-
-// Override originalImage onload to include resizing
-const originalOnload = originalImage.onload;
-originalImage.onload = function() {
-    // First resize the canvas properly
-    resizeCanvas();
-    
-    // Then call the original onload function if it exists
-    if (typeof originalOnload === 'function') {
-        originalOnload.call(this);
-    } else {
-        // Or just apply filters directly
-        applyFilters();
-    }
-};
-
-// Call resizeCanvas when DOM is loaded (in case image loads before event listeners)
-document.addEventListener('DOMContentLoaded', function() {
-    resizeCanvas();
-});
