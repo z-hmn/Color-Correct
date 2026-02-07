@@ -56,6 +56,16 @@ python3 run.py
 
 Or use `make run` (Mac/Linux). Then open http://127.0.0.1:5000 in your browser.
 
+## Troubleshooting
+
+**"Port 5000 is already in use"** — A previous run of the app (or another process) is still using the port. Stop it first:
+
+1. Find the process: `lsof -i :5000` (look for the PID in the output).
+2. Stop it: `kill <PID>` (use the number from step 1). If it doesn’t exit: `kill -9 <PID>`.
+3. Start the app again: `python3 dev.py` or `make`.
+
+One-liner to kill whatever is on port 5000: `kill $(lsof -t -i :5000)` (Mac/Linux).
+
 ## Adding dependencies
 
 - **With uv:** add the package in `pyproject.toml` under `[project].dependencies`, then run `uv lock` and commit `uv.lock`. Install with `uv sync`.
