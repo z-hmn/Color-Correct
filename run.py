@@ -5,7 +5,7 @@ from datetime import datetime
 import uuid
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Change this in production
+app.secret_key = os.environ.get("SECRET_KEY", "your_secret_key")  # Set SECRET_KEY in production (e.g. on Render)
 
 # Load data from JSON file
 def load_data():

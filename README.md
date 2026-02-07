@@ -66,6 +66,17 @@ Or use `make run` (Mac/Linux). Then open http://127.0.0.1:5000 in your browser.
 
 One-liner to kill whatever is on port 5000: `kill $(lsof -t -i :5000)` (Mac/Linux).
 
+## Deploy to Render
+
+The app is set up to deploy on [Render](https://render.com)
+
+1. Push this repo to GitHub
+2. In the [Render Dashboard](https://dashboard.render.com), click **New → Blueprint**.
+3. Connect the GitHub repo. Render will read [render.yaml](render.yaml) and create a **Web Service** with the right build and start commands.
+4. In the new service, open **Environment** and add a **SECRET_KEY** variable (e.g. a long random string). This is used for Flask sessions in production.
+5. Deploy. The app will be available at `https://<your-service>.onrender.com`.
+
+
 ## Adding dependencies
 
 - **With uv:** add the package in `pyproject.toml` under `[project].dependencies`, then run `uv lock` and commit `uv.lock`. Install with `uv sync`.

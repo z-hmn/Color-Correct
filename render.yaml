@@ -1,0 +1,15 @@
+# Render Blueprint: deploy this repo as a Web Service.
+# In Render Dashboard: New → Blueprint → connect this repo. Render will create the service from this file.
+# Set SECRET_KEY in the service's Environment tab (or in an Environment Group) for production.
+
+services:
+  - type: web
+    name: color-correct
+    runtime: python
+    plan: free
+
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT run:app
+
+    # Optional: health check for zero-downtime deploys
+    healthCheckPath: /
