@@ -4,8 +4,10 @@ __pycache__/
 *.pyo
 
 # Virtual environment
+.venv/
 venv/
 env/
+.envrc
 
 # Flask cache files
 instance/
