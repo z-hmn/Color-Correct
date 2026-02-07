@@ -8,10 +8,10 @@ After cloning the repo, get the app running with **one command**:
 
 | Platform   | Command      |
 |-----------|--------------|
-| Any (Windows, Mac, Linux) | `python dev.py` |
+| Any (Windows, Mac, Linux) | `python3 dev.py` |
 | Mac / Linux               | `make`          |
 
-This creates a virtual environment, installs dependencies, and starts the server. Then open **http://127.0.0.1:5000** in your browser.
+This creates a virtual environment, installs dependencies, and starts the server. Then open **http://127.0.0.1:5000** in your browser. When you're done, press **Ctrl+C** in the terminal to stop the server.
 
 You only need **Python 3.11+** installed (see [.python-version](.python-version); 3.12 recommended).
 
@@ -51,7 +51,7 @@ pip install -r requirements.txt
 From the project root with the virtual environment activated:
 
 ```bash
-python run.py
+python3 run.py
 ```
 
 Or use `make run` (Mac/Linux). Then open http://127.0.0.1:5000 in your browser.
