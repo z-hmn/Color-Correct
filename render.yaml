@@ -4,7 +4,7 @@
 
 services:
   - type: web
-    name: color-correct
+    name: colorcorrect
     runtime: python
     plan: free
 
