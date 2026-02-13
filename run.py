@@ -127,8 +127,9 @@ def quiz(question_id):
     quiz_content = load_quiz_content()
     total_questions = len(quiz_content)
     
-    # Initialize quiz start time when first entering the quiz
-    if 'quiz_start_time' not in session or session['quiz_start_time'] is None:
+    # Initialize quiz start time when first entering the quiz (only on question 1)
+    # This ensures we only start tracking when user actually begins the quiz
+    if question_id == 1 and ('quiz_start_time' not in session or session['quiz_start_time'] is None):
         session['quiz_start_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         session['quiz_total_time'] = 0
         session['question_attempts'] = {}
@@ -263,15 +264,28 @@ def quiz_result():
     
     # Calculate time spent on quiz
     total_time = 0
-    if session.get('quiz_start_time'):
-        start_time = datetime.strptime(session['quiz_start_time'], '%Y-%m-%d %H:%M:%S')
-        end_time = datetime.now()
-        total_time = (end_time - start_time).total_seconds()
+    quiz_start_time = session.get('quiz_start_time')
+    
+    if quiz_start_time:
+        try:
+            # Parse the stored start time
+            start_time = datetime.strptime(quiz_start_time, '%Y-%m-%d %H:%M:%S')
+            end_time = datetime.now()
+            total_time = (end_time - start_time).total_seconds()
+            
+            # Ensure time is not negative (shouldn't happen, but safety check)
+            if total_time < 0:
+                total_time = 0
+        except (ValueError, TypeError) as e:
+            # If there's an error parsing the time, set to 0
+            print(f"Error calculating quiz time: {e}")
+            total_time = 0
     
     # Get attempts data
     attempts_data = session.get('question_attempts', {})
     
-    # Reset quiz tracking
+    # Reset quiz tracking after calculating results
+    # This allows the user to retake the quiz with fresh timing
     session['quiz_start_time'] = None
     session['question_attempts'] = {}
     session.modified = True
