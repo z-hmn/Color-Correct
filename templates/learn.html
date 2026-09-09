@@ -1,43 +1,54 @@
 {% extends "layout.html" %}
+{% block title %}{{ lesson.title }}{% endblock %}
+
 {% block content %}
-<div class="row">
+<div class="row g-4">
     <!-- Image Preview Section -->
-    <div class="col-md-7">
+    <div class="col-lg-7">
         <div class="canvas-wrapper">
             <canvas id="edit-canvas"></canvas>
         </div>
     </div>
+
     <!-- Controls Section -->
-    <div class="col-md-5">
-        <div class="card mb-4">
+    <div class="col-lg-5">
+        <div class="card mb-3">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">{{ lesson.title }}</h5>
                 <span class="badge bg-primary">Step {{ lesson_id }} of {{ total_lessons }}</span>
             </div>
             <div class="card-body">
                 <!-- Tool Description -->
-                <div class="tool-description mb-4 p-3 bg-light rounded">
+                <div class="tool-description mb-4 p-3">
                     <p>{{ lesson.description }}</p>
                 </div>
+
                 {% if not lesson.final_step %}
                 <!-- Single Tool Slider -->
-                <div class="slider-group mb-4">
-                    <label for="{{ lesson.tool }}-slider" class="form-label">{{ lesson.title }}: <span class="slider-value">{{ lesson.default }}</span></label>
+                <div class="slider-group">
+                    <label for="{{ lesson.tool }}-slider" class="form-label">
+                        <span>{{ lesson.title }}</span>
+                        <span class="slider-value">{{ lesson.default }}</span>
+                    </label>
                     <input type="range" class="form-range" id="{{ lesson.tool }}-slider"
-                    min="{{ lesson.min }}" max="{{ lesson.max }}" value="{{ lesson.default }}">
+                        min="{{ lesson.min }}" max="{{ lesson.max }}" value="{{ lesson.default }}">
                 </div>
                 {% else %}
                 <!-- Final Step: Show all sliders -->
                 {% for l in lessons if not l.final_step %}
-                <div class="slider-group mb-4">
-                    <label for="{{ l.tool }}-slider" class="form-label">{{ l.title }}: <span class="slider-value">{{ l.default }}</span></label>
+                <div class="slider-group mb-3">
+                    <label for="{{ l.tool }}-slider" class="form-label">
+                        <span>{{ l.title }}</span>
+                        <span class="slider-value">{{ l.default }}</span>
+                    </label>
                     <input type="range" class="form-range" id="{{ l.tool }}-slider"
-                    min="{{ l.min }}" max="{{ l.max }}" value="{{ l.default }}">
+                        min="{{ l.min }}" max="{{ l.max }}" value="{{ l.default }}">
                 </div>
                 {% endfor %}
                 {% endif %}
             </div>
         </div>
+
         <!-- Navigation Buttons -->
         <div class="d-flex justify-content-between">
             {% if lesson_id > 1 %}
@@ -45,7 +56,7 @@
             {% else %}
             <a href="{{ url_for('home') }}" class="btn btn-secondary">Home</a>
             {% endif %}
-            
+
             {% if next_lesson %}
             <a href="{{ url_for('learn', lesson_id=next_lesson) }}" class="btn btn-primary">Next</a>
             {% else %}

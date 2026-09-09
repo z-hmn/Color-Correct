@@ -1,32 +1,43 @@
 {% extends "layout.html" %}
 {% block title %}Quiz Results{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8 text-center">
-        <h2 class="display-4 mb-4">Quiz Results</h2>
-        <div class="card bg-light border-secondary mb-5">
-            <div class="card-body">
-                <div class="display-1 text-{{ 'success' if score >= 70 else 'warning' if score >= 50 else 'danger' }}">
-                    {{ score }}%
-                </div>
-                <p class="lead mt-3">
+    <div class="col-lg-7">
+
+        <div class="text-center" style="padding: 2.5rem 0 2rem;">
+            <p class="eyebrow" style="font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cc-ink-faint); margin-bottom: 1rem;">Results</p>
+            <h1 class="mb-0" style="font-size: 1.75rem;">Quiz Results</h1>
+        </div>
+
+        <div class="card">
+            <div class="card-body text-center" style="padding: 2.25rem 1.5rem;">
+                {% set score_color = 'var(--cc-good)' if score >= 70 else 'var(--cc-warn)' if score >= 50 else 'var(--cc-bad)' %}
+                <div class="score-display" style="color: {{ score_color }};">{{ score }}%</div>
+
+                <p class="mt-3 mb-2" style="font-size: 0.9375rem;">
                     You answered {{ correct }} out of {{ total }} questions correctly.
                 </p>
-                <div class="mt-4">
+
+                <p class="mb-0" style="font-size: 0.9375rem;">
                     {% if score >= 70 %}
-                        <p>Great job! You have a good understanding of color correction techniques.</p>
+                        Great job! You have a good understanding of color correction techniques.
                     {% elif score >= 50 %}
-                        <p>Good effort! You're on your way to mastering color correction.</p>
+                        Good effort! You're on your way to mastering color correction.
                     {% else %}
-                        <p>Keep practicing! Color correction takes time to master.</p>
+                        Keep practicing! Color correction takes time to master.
                     {% endif %}
-                </div>
-                
-                <!-- Time spent section -->
-                {% if time_spent is defined and time_spent > 0 %}
-                <div class="mt-3">
-                    <h5>Total Quiz Time:</h5>
-                    <p>
+                </p>
+            </div>
+        </div>
+
+        <!-- Time spent -->
+        {% if time_spent is defined %}
+        <div class="card mt-3">
+            <div class="card-body">
+                <p class="result-meta-label">Total Quiz Time</p>
+                <p class="mb-0" style="font-size: 0.9375rem; color: var(--cc-ink);">
+                    {% if time_spent > 0 %}
                         {% set minutes = (time_spent / 60)|int %}
                         {% set seconds = (time_spent % 60)|int %}
                         {% if minutes > 0 %}
@@ -34,45 +45,44 @@
                         {% else %}
                             {{ seconds }} second{% if seconds != 1 %}s{% endif %}
                         {% endif %}
-                    </p>
-                </div>
-                {% elif time_spent is defined and time_spent == 0 %}
-                <div class="mt-3">
-                    <h5>Total Quiz Time:</h5>
-                    <p>Less than 1 second</p>
-                </div>
-                {% endif %}
-                
-                <!-- Attempts breakdown section -->
-                {% if attempts_data is defined %}
-                <div class="mt-4">
-                    <h5>How many times you hit "Check" before getting it right:</h5>
-                    <div class="card my-3">
-                        <ul class="list-group list-group-flush text-start">
-                            {% for i in range(1, total + 1) %}
-                                <li class="list-group-item">
-                                    <strong>Question {{ i }}:</strong> 
-                                    {% if i|string in attempts_data %}
-                                        {% if attempts_data[i|string] == 1 %}
-                                            You were correct on the first try!
-                                        {% else %}
-                                            You took {{ attempts_data[i|string] }} tries.
-                                        {% endif %}
-                                    {% else %}
-                                        No attempt recorded.
-                                    {% endif %}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                {% endif %}
+                    {% else %}
+                        Less than 1 second
+                    {% endif %}
+                </p>
             </div>
         </div>
-        <div class="d-flex justify-content-center gap-3">
+        {% endif %}
+
+        <!-- Attempts breakdown -->
+        {% if attempts_data is defined %}
+        <div class="card mt-3">
+            <div class="card-body pb-0">
+                <p class="result-meta-label">How many times you hit “Check” before getting it right</p>
+            </div>
+            <ul class="list-group list-group-flush text-start">
+                {% for i in range(1, total + 1) %}
+                    <li class="list-group-item">
+                        <strong>Question {{ i }}:</strong>
+                        {% if i|string in attempts_data %}
+                            {% if attempts_data[i|string] == 1 %}
+                                You were correct on the first try!
+                            {% else %}
+                                You took {{ attempts_data[i|string] }} tries.
+                            {% endif %}
+                        {% else %}
+                            No attempt recorded.
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="d-flex justify-content-center gap-2 mt-4">
             <a href="{{ url_for('learn', lesson_id=1) }}" class="btn btn-primary">Review Lessons</a>
             <a href="{{ url_for('quiz', question_id=1) }}" class="btn btn-outline-primary">Retake Quiz</a>
         </div>
+
     </div>
 </div>
 {% endblock %}

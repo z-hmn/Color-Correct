@@ -1,73 +1,90 @@
-// Updated quiz.js with attempt tracking
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('quiz-form');
-    const feedbackContainer = document.getElementById('feedback');
-    const submitButton = document.getElementById('submit-btn');
-    
-    // Keep track of attempts for this question
-    let attempts = 0;
-    
-    if (form) {
-        form.addEventListener('submit', function(e) {
+/*
+ * Multiple-choice quiz interaction with attempt tracking.
+ */
+(function () {
+    'use strict';
+
+    function init() {
+        const form = document.getElementById('quiz-form');
+        if (!form) return;
+
+        const feedbackContainer = document.getElementById('feedback');
+        const submitButton = document.getElementById('submit-btn');
+
+        let attempts = 0;
+        let answeredCorrectly = false;
+
+        function goToNext() {
+            const nextId = submitButton.getAttribute('data-next-id');
+            if (nextId) {
+                window.location.href = `/quiz/${nextId}`;
+            }
+        }
+
+        // The button is type="submit", so the submit event is the single entry
+        // point for both checking an answer and advancing to the next question.
+        form.addEventListener('submit', function (e) {
             e.preventDefault();
-            
-            // Increment attempts count
+
+            if (answeredCorrectly) {
+                goToNext();
+                return;
+            }
+
+            const selected = form.querySelector('input[name="answer"]:checked');
+            if (!selected) {
+                feedbackContainer.innerHTML =
+                    '<div class="feedback incorrect">Please choose an answer first.</div>';
+                return;
+            }
+
             attempts++;
-            
-            // Get the question ID
+
             const questionId = form.getAttribute('data-question-id');
-            
+
             // Track this attempt in localStorage as a backup
             const localAttempts = JSON.parse(localStorage.getItem('quizAttempts') || '{}');
             localAttempts[questionId] = attempts;
             localStorage.setItem('quizAttempts', JSON.stringify(localAttempts));
-            
-            // Submit the form
-            const formData = new FormData(form);
+
             fetch(`/quiz/${questionId}`, {
                 method: 'POST',
-                body: formData
+                body: new FormData(form)
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Received response:", data); // Debugging output
-                feedbackContainer.innerHTML = `<div class="${data.feedback_class}">${data.feedback}</div>`;
-                
-                if (data.feedback_class === "feedback correct") {
-                    // Update the button when the answer is correct
-                    submitButton.textContent = data.is_last ? "Next" : "Next";
-                    submitButton.classList.add("btn-success");
-                    submitButton.classList.remove("btn-primary");
-                    submitButton.setAttribute("data-next-id", data.next_id);
-                    
-                    // Update attempts count from server
-                    if (data.attempts) {
-                        attempts = data.attempts;
+                .then(response => response.json())
+                .then(data => {
+                    feedbackContainer.innerHTML =
+                        `<div class="${data.feedback_class}">${data.feedback}</div>`;
+
+                    if (data.feedback_class === 'feedback correct') {
+                        answeredCorrectly = true;
+
+                        submitButton.textContent = 'Next';
+                        submitButton.classList.add('btn-success');
+                        submitButton.classList.remove('btn-primary');
+                        submitButton.setAttribute('data-next-id', data.next_id);
+
+                        if (data.attempts) {
+                            attempts = data.attempts;
+                        }
+
+                        // Lock the options once the answer is correct
+                        form.querySelectorAll('input[type="radio"]').forEach(input => {
+                            input.disabled = true;
+                        });
+                    } else {
+                        submitButton.textContent = 'Check';
+                        submitButton.classList.add('btn-primary');
+                        submitButton.classList.remove('btn-success');
                     }
-                    
-                    // Disable all radio buttons after correct answer
-                    document.querySelectorAll('input[type="radio"]').forEach(input => {
-                        input.disabled = true;
-                    });
-                } else {
-                    submitButton.textContent = "Check";
-                    submitButton.classList.add("btn-primary");
-                    submitButton.classList.remove("btn-success");
-                }
-            })
-            .catch(error => console.log('Error:', error));
-        });
-        
-        submitButton.addEventListener('click', function() {
-            // Only handle navigation when button is "Next"
-            if (submitButton.textContent === "Next") {
-                const nextId = submitButton.getAttribute("data-next-id");
-                console.log("Next question ID:", nextId);
-                if (nextId) {
-                    // Always use the standard path - our backend will handle special cases
-                    window.location.href = `/quiz/${nextId}`;
-                }
-            }
+                })
+                .catch(error => console.error('Error:', error));
         });
     }
-});
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();

@@ -7,6 +7,12 @@ import uuid
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "your_secret_key")  # Set SECRET_KEY in production (e.g. on Render)
 
+
+@app.context_processor
+def inject_globals():
+    """Values available to every template (e.g. the footer copyright year)."""
+    return {'current_year': datetime.now().year}
+
 # Load data from JSON file
 def load_data():
     with open('data.json', 'r') as file:
@@ -107,9 +113,6 @@ def learn(lesson_id):
     
     # Regular lesson pages
     else:
-        if lesson_id == 8:  # Original "Putting It All Together" - redirect to new review page
-            return redirect(url_for('learn', lesson_id=8))
-            
         lesson = data['lessons'][lesson_id - 1]
         total_lessons = len(data['lessons']) + 1  # +1 for practice page
         next_lesson = lesson_id + 1 if lesson_id < total_lessons else None
@@ -149,7 +152,11 @@ def quiz(question_id):
     
     # Special case for the practical question (assuming it's question 4)
     if question_id == 4:  # Practical question
-        return render_template('practical_quiz.html', question_id=question_id, total_questions=total_questions)
+        practical_question = next((q for q in quiz_content if q['id'] == question_id), None)
+        return render_template('practical_quiz.html',
+                               question=practical_question,
+                               question_id=question_id,
+                               total_questions=total_questions)
     
     # Regular quiz questions
     question = next((q for q in quiz_content if q['id'] == question_id), None)

@@ -9,12 +9,5 @@ run: setup
 
 # Create venv and install dependencies
 setup:
-	@if [ ! -d .venv ]; then \
-		echo "Creating virtual environment..."; \
-		python3 -m venv .venv; \
-		echo "Installing dependencies..."; \
-		.venv/bin/pip install -q -r requirements.txt; \
-	else \
-		.venv/bin/pip install -q -r requirements.txt; \
-	fi
+	@python3 -c "from dev import ensure_venv; ensure_venv()"
 	@echo "Environment ready. Run 'make run' or just 'make' to start the app."

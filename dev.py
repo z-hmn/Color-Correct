@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 One-command setup and run for new developers.
-Usage: python dev.py
+Usage: python3 dev.py
 
 Creates a virtual environment if needed, installs dependencies, then starts the app.
 Works on Windows, macOS, and Linux.
@@ -24,22 +24,33 @@ def run(cmd: list[str], env: dict | None = None, check: bool = True) -> subproce
 
 
 def ensure_venv() -> Path:
-    """Create .venv if it doesn't exist. Return path to venv Python."""
+    """Ensure .venv and its dependencies are ready. Return its Python path."""
     if sys.platform == "win32":
         venv_python = VENV_DIR / "Scripts" / "python.exe"
-        venv_pip = VENV_DIR / "Scripts" / "pip.exe"
     else:
         venv_python = VENV_DIR / "bin" / "python"
-        venv_pip = VENV_DIR / "bin" / "pip"
 
     if not venv_python.exists():
         print("Creating virtual environment...")
         run([sys.executable, "-m", "venv", str(VENV_DIR)])
-        print("Installing dependencies...")
-        run([str(venv_python), "-m", "pip", "install", "-q", "-r", str(REQUIREMENTS)])
+
+    # Environments created by uv do not include pip by default.
+    pip_check = run(
+        [
+            str(venv_python),
+            "-c",
+            "import importlib.util; raise SystemExit(importlib.util.find_spec('pip') is None)",
+        ],
+        check=False,
+    )
+    if pip_check.returncode == 1:
+        print("Installing pip in the virtual environment...")
+        run([str(venv_python), "-m", "ensurepip", "--upgrade"])
     else:
-        # Ensure deps are installed (idempotent)
-        run([str(venv_pip), "install", "-q", "-r", str(REQUIREMENTS)], check=False)
+        pip_check.check_returncode()
+
+    print("Installing dependencies...")
+    run([str(venv_python), "-m", "pip", "install", "-q", "-r", str(REQUIREMENTS)])
 
     return venv_python
 

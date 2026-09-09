@@ -78,8 +78,8 @@
       "id": 4,
       "question_text": "Try to match the edit shown in the target image. Focus on making the sunset scene warmer.",
       "type": "image_edit",
-      "base_image": "img/quiz_image.jpg",
-      "target_image": "img/quiz_image_target.jpg",
+      "base_image": "images/quiz_original.jpg",
+      "target_image": "images/target_edited.jpg",
       "primary_adjustment": "warmth",
       "target_values": {
         "exposure": -30,

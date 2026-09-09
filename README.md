@@ -11,7 +11,7 @@ After cloning the repo, get the app running with **one command**:
 | Any (Windows, Mac, Linux) | `python3 dev.py` |
 | Mac / Linux               | `make`          |
 
-This creates a virtual environment, installs dependencies, and starts the server. Then open **http://127.0.0.1:5000** in your browser. When you're done, press **Ctrl+C** in the terminal to stop the server.
+This creates or reuses `.venv`, installs pip if needed (including in environments created with `uv`), installs dependencies, and starts the server. Setup stops if dependency installation fails. Then open **http://127.0.0.1:5000** in your browser. When you're done, press **Ctrl+C** in the terminal to stop the server.
 
 You only need **Python 3.11+** installed (see [.python-version](.python-version); 3.12 recommended).
 
